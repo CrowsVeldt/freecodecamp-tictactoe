@@ -1,27 +1,55 @@
 import React, { Component } from 'react'
 import './App.css'
 
-class Square extends Component {
-  render () {
+function Square(props) {
     return (
-      <div className='game-square'>X</div>
+      <button className='game-square' onClick={props.onClick}>
+        {props.value}
+      </button>
     )
-  }
 }
 
 class Board extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      current: Array(9).fill(null)
+    }
+  }
+
+  handleClick = (i) => {
+
+    this.setState({
+
+    })
+  }
+
+  renderSquare = (i) => {
+    return (
+      <Square 
+      value={this.state.current[i]}
+      onClick={() => {this.handleClick(i)}}/>
+    )
+  }
+
   render () {
     return (
       <div className='game-board'>
-        <Square key='0' />
-        <Square key='1' />
-        <Square key='2' />
-        <Square key='3' />
-        <Square key='4' />
-        <Square key='5' />
-        <Square key='6' />
-        <Square key='7' />
-        <Square key='8' />
+        <div className='game-row'>
+          {this.renderSquare(0)}
+          {this.renderSquare(1)}
+          {this.renderSquare(2)}
+        </div>
+        <div className='game-row'>
+          {this.renderSquare(3)}
+          {this.renderSquare(4)}
+          {this.renderSquare(5)}
+        </div>
+        <div className='game-row'>
+          {this.renderSquare(6)}
+          {this.renderSquare(7)}
+          {this.renderSquare(8)}
+        </div>
       </div>
     )
   }
