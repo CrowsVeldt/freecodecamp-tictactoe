@@ -10,25 +10,19 @@ function Square(props) {
 }
 
 class Board extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      current: Array(9).fill(null)
-    }
-  }
-
-  handleClick = (i) => {
-
-    this.setState({
-
-    })
-  }
+  // constructor (props) {
+  //   super(props)
+  //   this.state = {
+  //     current: Array(9).fill(null),
+  //     xsTurn: true
+  //   }
+  // }
 
   renderSquare = (i) => {
     return (
       <Square 
-      value={this.state.current[i]}
-      onClick={() => {this.handleClick(i)}}/>
+      value={this.props.currentGame[i]}
+      onClick={() => {this.props.onClick(i)}}/>
     )
   }
 
@@ -56,11 +50,31 @@ class Board extends Component {
 }
 
 class Game extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      currentGame: Array(9).fill(null),
+      xsTurn: true
+    }
+  }
+
+    handleClick = (i) => {
+    if (this.state.currentGame[i] !== null) {
+      return
+    }
+    const newSquares = this.state.currentGame.slice()
+    newSquares[i] = this.state.xsTurn ? 'X' : 'O'
+    this.setState({
+      currentGame: newSquares,
+      xsTurn: !this.state.xsTurn
+    })
+  }
+
   render () {
     return (
       <div className='game'>
         <h1 className='game-title'>Tic Tac Toe</h1>
-        <Board />
+        <Board onClick={this.handleClick} currentGame={this.state.currentGame}/>
       </div>
     )
   }
