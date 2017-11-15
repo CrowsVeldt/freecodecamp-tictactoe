@@ -69,6 +69,20 @@ class Game extends Component {
       xsTurn: !this.state.xsTurn
     })
   }
+ 
+  finishGame = () => {
+    // Compare each line of currentGame to {lines} to see if the game is over
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ]
+  }
 
   render () {
     return (
