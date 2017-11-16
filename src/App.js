@@ -21,7 +21,7 @@ class Board extends Component {
   renderSquare = (i) => {
     return (
       <Square 
-      value={this.props.currentGame[i]}
+      value={this.props.currentSquares[i]}
       onClick={() => {this.props.onClick(i)}}/>
     )
   }
@@ -53,25 +53,58 @@ class Game extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentGame: Array(9).fill(null),
+      currentSquares: Array(9).fill(null),
       xsTurn: true
     }
   }
 
     handleClick = (i) => {
-    if (this.state.currentGame[i] !== null) {
+    const newSquares = this.state.currentSquares.slice()
+    
+    if (newSquares[i] !== null || checkWinner(newSquares)) {
       return
     }
-    const newSquares = this.state.currentGame.slice()
+
     newSquares[i] = this.state.xsTurn ? 'X' : 'O'
+
     this.setState({
-      currentGame: newSquares,
+      currentSquares: newSquares,
       xsTurn: !this.state.xsTurn
     })
   }
- 
-  finishGame = () => {
-    // Compare each line of currentGame to {lines} to see if the game is over
+
+  restart = () => {
+    this.setState({
+      currentSquares: Array(9).fill(null),
+      xsTurn: true
+    })
+  }
+
+  render () {
+
+    let newGameButton
+
+    let status 
+
+    if (checkWinner(this.state.currentSquares)) {
+      status = checkWinner(this.state.currentSquares) + ' Wins!'
+      newGameButton = <button className='new-game' onClick={this.restart}>New Game?</button>
+    } else {
+      status = this.state.xsTurn ? 'Current Player: X' : 'Current Player: O'
+    }
+    
+    return (
+      <div className='game'>
+        <h1 className='game-title'>Tic Tac Toe</h1>
+        <h2 className='game-status'>{status}</h2>
+        <Board onClick={this.handleClick} currentSquares={this.state.currentSquares}/>
+        {newGameButton}
+      </div>
+    )
+  }
+}
+
+  function checkWinner (check)  {
     const lines = [
       [0, 1, 2],
       [3, 4, 5],
@@ -82,16 +115,14 @@ class Game extends Component {
       [0, 4, 8],
       [2, 4, 6]
     ]
-  }
 
-  render () {
-    return (
-      <div className='game'>
-        <h1 className='game-title'>Tic Tac Toe</h1>
-        <Board onClick={this.handleClick} currentGame={this.state.currentGame}/>
-      </div>
-    )
+    for (let i = 0, length = lines.length; i < length; i++) {
+      const [a, b, c] = lines[i]
+      if (check[a] && check[a] === check[b] && check[a] === check[c]) {
+        return check[a]
+      }
+    }
+    return null
   }
-}
 
 export default Game
