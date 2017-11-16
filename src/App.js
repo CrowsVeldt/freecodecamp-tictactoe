@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import './App.css'
+import './AI'
 
 function Square(props) {
     return (
@@ -14,6 +15,7 @@ class Board extends Component {
   renderSquare = (i) => {
     return (
       <Square 
+      className={'square #' + i}
       value={this.props.currentSquares[i]}
       onClick={() => {this.props.onClick(i)}}/>
     )
@@ -74,10 +76,14 @@ class Game extends Component {
   }
 
   render () {
-
+    const onePlayer = this.props.onePlayer
     const squares = this.state.currentSquares
     let newGameButton
     let status 
+
+    // if (onePlayer && !this.state.xsTurn) {
+    //   const event = new MouseEvent('click')
+    // }
 
     if (checkWinner(squares)) {
       status = checkWinner(squares) + ' Wins!'
@@ -120,5 +126,9 @@ class Game extends Component {
     }
     return null
   }
+
+  // function aiMove () {
+  //   return Math.floor(Math.random() * (8 - 0 + 1)) + 0
+  // }
 
 export default Game
