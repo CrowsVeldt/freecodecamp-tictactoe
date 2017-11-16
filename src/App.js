@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import './App.css'
-import './AI'
 
 function Square(props) {
     return (
@@ -76,14 +75,10 @@ class Game extends Component {
   }
 
   render () {
-    const onePlayer = this.props.onePlayer
+    const isOnePlayer = this.props.isOnePlayer
     const squares = this.state.currentSquares
     let newGameButton
     let status 
-
-    // if (onePlayer && !this.state.xsTurn) {
-    //   const event = new MouseEvent('click')
-    // }
 
     if (checkWinner(squares)) {
       status = checkWinner(squares) + ' Wins!'
@@ -93,6 +88,21 @@ class Game extends Component {
       newGameButton = <button className='new-game' onClick={this.restart}>New Game?</button>
     } else {
       status = this.state.xsTurn ? 'Current Player: X' : 'Current Player: O'
+    }
+
+     if (isOnePlayer === 'true' && !this.state.xsTurn && squares.includes(null)) {
+      let aiMove = false
+
+      while (!aiMove) {
+        let num = random()
+
+        if (squares[num] === null) {
+          this.handleClick(num)
+          aiMove = true
+        }
+      }
+
+      this.handleClick(aiMove)
     }
     
     return (
@@ -127,8 +137,8 @@ class Game extends Component {
     return null
   }
 
-  // function aiMove () {
-  //   return Math.floor(Math.random() * (8 - 0 + 1)) + 0
-  // }
+  function random () {
+    return Math.floor(Math.random() * (8 - 0 + 1)) + 0
+  }
 
 export default Game

@@ -5,9 +5,9 @@ import Game from './App'
 import registerServiceWorker from './registerServiceWorker'
 
 // Create a better modal for this
-const onePlayer = true // window.confirm('Play against the computer?')
+const isOnePlayer = window.confirm('Play against the computer?')
 
-const game = onePlayer ? <Game onePlayer='true' /> : <Game onePlayer='false' />
+const game = isOnePlayer ? <Game isOnePlayer='true' /> : <Game isOnePlayer='false' />
 
 ReactDOM.render(
   game,
