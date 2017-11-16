@@ -10,13 +10,6 @@ function Square(props) {
 }
 
 class Board extends Component {
-  // constructor (props) {
-  //   super(props)
-  //   this.state = {
-  //     current: Array(9).fill(null),
-  //     xsTurn: true
-  //   }
-  // }
 
   renderSquare = (i) => {
     return (
@@ -82,12 +75,15 @@ class Game extends Component {
 
   render () {
 
+    const squares = this.state.currentSquares
     let newGameButton
-
     let status 
 
-    if (checkWinner(this.state.currentSquares)) {
-      status = checkWinner(this.state.currentSquares) + ' Wins!'
+    if (checkWinner(squares)) {
+      status = checkWinner(squares) + ' Wins!'
+      newGameButton = <button className='new-game' onClick={this.restart}>New Game?</button>
+    } else if (!checkWinner(squares) && !squares.includes(null)) {
+      status = 'Tie'
       newGameButton = <button className='new-game' onClick={this.restart}>New Game?</button>
     } else {
       status = this.state.xsTurn ? 'Current Player: X' : 'Current Player: O'
@@ -97,7 +93,7 @@ class Game extends Component {
       <div className='game'>
         <h1 className='game-title'>Tic Tac Toe</h1>
         <h2 className='game-status'>{status}</h2>
-        <Board onClick={this.handleClick} currentSquares={this.state.currentSquares}/>
+        <Board onClick={this.handleClick} currentSquares={squares}/>
         {newGameButton}
       </div>
     )
