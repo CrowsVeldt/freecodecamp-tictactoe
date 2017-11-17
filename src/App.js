@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import './App.css'
+import computerMove from './AI'
 
 function Square(props) {
     return (
@@ -74,8 +75,27 @@ class Game extends Component {
     })
   }
 
-  render () {
+  componentDidUpdate() {
     const isOnePlayer = this.props.isOnePlayer
+    const squares = this.state.currentSquares
+
+    if (isOnePlayer === 'true' && !this.state.xsTurn && squares.includes(null)) {
+      let movePossible = false
+
+      while (!movePossible) {
+        let num = random()
+
+        if (squares[num] === null) {
+          this.handleClick(num)
+          movePossible = true
+        }
+      }
+      // console.log(computerMove(squares))
+      // this.handleClick(computerMove(squares))
+    }
+  }
+
+  render () {
     const squares = this.state.currentSquares
     let newGameButton
     let status 
@@ -88,21 +108,6 @@ class Game extends Component {
       newGameButton = <button className='new-game' onClick={this.restart}>New Game?</button>
     } else {
       status = this.state.xsTurn ? 'Current Player: X' : 'Current Player: O'
-    }
-
-     if (isOnePlayer === 'true' && !this.state.xsTurn && squares.includes(null)) {
-      let aiMove = false
-
-      while (!aiMove) {
-        let num = random()
-
-        if (squares[num] === null) {
-          this.handleClick(num)
-          aiMove = true
-        }
-      }
-
-      this.handleClick(aiMove)
     }
     
     return (
