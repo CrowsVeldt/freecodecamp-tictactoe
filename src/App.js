@@ -53,7 +53,7 @@ class Game extends Component {
     }
   }
 
-    handleClick = (i) => {
+  handleClick = (i) => {
     const newSquares = this.state.currentSquares.slice()
     
     if (newSquares[i] !== null || checkWinner(newSquares)) {
@@ -100,10 +100,8 @@ class Game extends Component {
 
     if (checkWinner(squares)) {
       status = checkWinner(squares) + ' Wins!'
-      newGameButton = <button className='new-game' onClick={this.restart}>New Game?</button>
     } else if (!checkWinner(squares) && !squares.includes(null)) {
       status = 'Tie'
-      newGameButton = <button className='new-game' onClick={this.restart}>New Game?</button>
     } else {
       status = this.state.xsTurn ? 'Current Player: X' : 'Current Player: O'
     }
@@ -113,7 +111,10 @@ class Game extends Component {
         <h1 className='game-title'>Tic Tac Toe</h1>
         <h2 className='game-status'>{status}</h2>
         <Board onClick={this.handleClick} currentSquares={squares}/>
-        {newGameButton}
+        <div className='button-container'>
+          <button className='new-game' onClick={this.restart}>Restart</button>
+          <button className='menu-button' onClick={this.props.returnFunction}>Menu</button>
+        </div>
       </div>
     )
   }
@@ -161,8 +162,7 @@ class StartMenu extends Component {
       }
       {this.state.gameStarted &&
         <div>
-          <Game numberOfPlayers={this.state.numberOfPlayers}/>
-          <button className='button' onClick={this.returnToMenu}>Return to Menu</button>
+          <Game numberOfPlayers={this.state.numberOfPlayers} returnFunction={this.returnToMenu}/>
         </div>
       }
     </div>
