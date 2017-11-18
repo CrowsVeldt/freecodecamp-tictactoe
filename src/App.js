@@ -76,10 +76,10 @@ class Game extends Component {
   }
 
   componentDidUpdate() {
-    const isOnePlayer = this.props.isOnePlayer
+    const numberOfPlayers = this.props.numberOfPlayers
     const squares = this.state.currentSquares
 
-    if (isOnePlayer === 'true' && !this.state.xsTurn && squares.includes(null)) {
+    if (numberOfPlayers === 1 && !this.state.xsTurn && squares.includes(null)) {
       let movePossible = false
 
       while (!movePossible) {
@@ -90,8 +90,6 @@ class Game extends Component {
           movePossible = true
         }
       }
-      // console.log(computerMove(squares))
-      // this.handleClick(computerMove(squares))
     }
   }
 
@@ -121,29 +119,88 @@ class Game extends Component {
   }
 }
 
-  function checkWinner (check)  {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6]
-    ]
-
-    for (let i = 0, length = lines.length; i < length; i++) {
-      const [a, b, c] = lines[i]
-      if (check[a] && check[a] === check[b] && check[a] === check[c]) {
-        return check[a]
-      }
+class StartMenu extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      gameStarted: false,
+      numberOfPlayers: null
     }
-    return null
+  }
+  
+  startOnePlayerGame = () => {
+    this.setState({
+      gameStarted: true,
+      numberOfPlayers: 1
+    })
   }
 
-  function random () {
-    return Math.floor(Math.random() * (8 - 0 + 1)) + 0
+  startTwoPlayerGame = () => {
+    this.setState({
+      gameStarted: true,
+      numberOfPlayers: 2
+    })
   }
 
-export default Game
+  returnToMenu = () => {
+    this.setState({
+      gameStarted: false,
+      numberOfPlayers:null
+    })
+  }
+
+  render () {
+    return (
+    <div> 
+      {!this.state.gameStarted &&
+        <div>
+          <p className='title'>One Player or Two?</p>
+          <button className='button' onClick={this.startOnePlayerGame}>One</button>
+          <button className='button' onClick={this.startTwoPlayerGame}>Two</button> 
+        </div>
+      }
+      {this.state.gameStarted &&
+        <div>
+          <Game numberOfPlayers={this.state.numberOfPlayers}/>
+          <button className='button' onClick={this.returnToMenu}>Return to Menu</button>
+        </div>
+      }
+    </div>
+  )
+  }
+}
+
+class App extends Component {
+  render () {
+    return (
+      <StartMenu />
+    )
+  }
+}
+
+function checkWinner (check)  {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ]
+
+  for (let i = 0, length = lines.length; i < length; i++) {
+    const [a, b, c] = lines[i]
+    if (check[a] && check[a] === check[b] && check[a] === check[c]) {
+      return check[a]
+    }
+  }
+  return null
+}
+
+function random () {
+  return Math.floor(Math.random() * (8 - 0 + 1)) + 0
+}
+
+export default App
