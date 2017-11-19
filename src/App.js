@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import './App.css'
-import computerMove from './AI'
 
 function Square(props) {
     return (
@@ -76,6 +75,9 @@ class Game extends Component {
   }
 
   componentDidUpdate() {
+    const currentPlayer = this.state.xsTurn ? 'X' : 'O'
+    console.log(minimax(this.state.currentSquares, currentPlayer, 'X', 'O'))
+
     const numberOfPlayers = this.props.numberOfPlayers
     const squares = this.state.currentSquares
 
@@ -264,6 +266,71 @@ function checkWinner (check)  {
 
 function random () {
   return Math.floor(Math.random() * (8 - 0 + 1)) + 0
+}
+
+function emptySpaces (board) {
+  const result = []
+
+  for (let i = 0; i < board.length; i++) {
+    if (board[i] !== 'X' && board[i] !== 'O'){
+      result.push(i)
+    }
+  }
+  return result
+}
+
+function minimax (newBoard, current, human, computer) {
+  // debugger
+  const availableSpaces = emptySpaces(newBoard)
+  const moves = []
+  let bestMove
+
+  if (checkWinner(newBoard) === human) {
+    return {score: -10}
+  } else if (checkWinner(newBoard) === computer) {
+    return {score: 10}
+  } else if (availableSpaces.length === 0) {
+    return {score: 0}
+  }
+
+  for (let i = 0; i < availableSpaces.length; i++) {
+    let move = {}
+    move.index = newBoard[availableSpaces[i]]
+
+    newBoard[availableSpaces[i]] = current
+
+    if (current === computer) {
+      const result = minimax(newBoard, human)
+      move.score = result.score
+    } else {
+      const result = minimax(newBoard, computer)
+      move.score = result.score
+    }
+
+    newBoard[availableSpaces[i]] = null
+
+    moves.push(move)
+  }
+
+  if (current === computer) {
+    let bestScore = -10000
+
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score > bestScore) {
+        bestScore = moves[i].score
+        bestMove = i
+      }
+    }
+  } else {
+    let bestScore = 10000
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score < bestScore) {
+        bestScore = moves[i].score
+        bestMove = i
+      }
+    }
+  }
+  return moves[bestMove]
 }
 
 export default App
