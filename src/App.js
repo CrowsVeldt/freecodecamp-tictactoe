@@ -95,7 +95,6 @@ class Game extends Component {
 
   render () {
     const squares = this.state.currentSquares
-    let newGameButton
     let status 
 
     if (checkWinner(squares)) {
@@ -125,21 +124,40 @@ class StartMenu extends Component {
     super(props)
     this.state = {
       gameStarted: false,
-      numberOfPlayers: null
+      numberOfPlayers: null,
+      chooseSide: false,
+      humanPlayer: null
     }
-  }
-  
-  startOnePlayerGame = () => {
-    this.setState({
-      gameStarted: true,
-      numberOfPlayers: 1
-    })
   }
 
   startTwoPlayerGame = () => {
     this.setState({
       gameStarted: true,
       numberOfPlayers: 2
+    })
+  }
+
+  chooseSideMenu = () => {
+    this.setState({
+      chooseSide: true,
+    })
+  }
+
+  chooseSideX = () => {
+    this.setState({
+      gameStarted: true,
+      numberOfPlayers: 1,
+      chooseSide: false,
+      humanPlayer: 'X'
+    })
+  }
+
+  chooseSideO = () => {
+    this.setState({
+      gameStarted: true,
+      numberOfPlayers: 1,
+      chooseSide: false,
+      humanPlayer: 'O'
     })
   }
 
@@ -153,20 +171,58 @@ class StartMenu extends Component {
   render () {
     return (
     <div> 
-      {!this.state.gameStarted &&
-        <div>
-          <p className='title'>One Player or Two?</p>
-          <button className='button' onClick={this.startOnePlayerGame}>One</button>
-          <button className='button' onClick={this.startTwoPlayerGame}>Two</button> 
-        </div>
+      {!this.state.gameStarted && !this.state.chooseSide &&
+        <Options 
+          title='One Player Or Two?' 
+          optionOne='One'
+          handleClickOne={this.chooseSideMenu}
+          optionTwo='two'
+          handleClickTwo={this.startTwoPlayerGame}
+        />
+      }
+      {
+        this.state.chooseSide && !this.state.gameStarted && 
+        <Options 
+          title='X or O?' 
+          optionOne='X'
+          handleClickOne={this.chooseSideX}
+          optionTwo='O'
+          handleClickTwo={this.chooseSideO}
+        />
       }
       {this.state.gameStarted &&
         <div>
-          <Game numberOfPlayers={this.state.numberOfPlayers} returnFunction={this.returnToMenu}/>
+          <Game 
+            numberOfPlayers={this.state.numberOfPlayers} 
+            humanPlayer={this.state.humanPlayer}
+            returnFunction={this.returnToMenu}
+          />
         </div>
       }
     </div>
   )
+  }
+}
+
+class Options extends Component {
+  render () {
+    return (
+      <div>
+        <p>{this.props.title}</p>
+        <button 
+          className='button' 
+          onClick={this.props.handleClickOne}
+        >
+          {this.props.optionOne}
+        </button>
+        <button 
+          className='button' 
+          onClick={this.props.handleClickTwo}
+        >
+          {this.props.optionTwo}
+        </button>
+      </div>
+    )
   }
 }
 
