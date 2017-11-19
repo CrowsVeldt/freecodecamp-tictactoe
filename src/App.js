@@ -109,10 +109,19 @@ class Game extends Component {
       <div className='game'>
         <h1 className='game-title'>Tic Tac Toe</h1>
         <h2 className='game-status'>{status}</h2>
-        <Board onClick={this.handleClick} currentSquares={squares}/>
+        <Board 
+          onClick={this.handleClick} 
+          currentSquares={squares}
+        />
         <div className='button-container'>
-          <button className='new-game' onClick={this.restart}>Restart</button>
-          <button className='menu-button' onClick={this.props.returnFunction}>Menu</button>
+          <button 
+            className='menu-button' 
+            onClick={this.props.returnFunction}
+          >Menu</button>
+          <button 
+            className='new-game' 
+            onClick={this.restart}
+          >Restart</button>
         </div>
       </div>
     )
@@ -172,7 +181,7 @@ class StartMenu extends Component {
     return (
     <div> 
       {!this.state.gameStarted && !this.state.chooseSide &&
-        <Options 
+        <OptionsButtons 
           title='One Player Or Two?' 
           optionOne='One'
           handleClickOne={this.chooseSideMenu}
@@ -182,7 +191,7 @@ class StartMenu extends Component {
       }
       {
         this.state.chooseSide && !this.state.gameStarted && 
-        <Options 
+        <OptionsButtons 
           title='X or O?' 
           optionOne='X'
           handleClickOne={this.chooseSideX}
@@ -196,15 +205,14 @@ class StartMenu extends Component {
             numberOfPlayers={this.state.numberOfPlayers} 
             humanPlayer={this.state.humanPlayer}
             returnFunction={this.returnToMenu}
-          />
-        </div>
+          /></div>
       }
     </div>
   )
   }
 }
 
-class Options extends Component {
+class OptionsButtons extends Component {
   render () {
     return (
       <div>
@@ -212,15 +220,11 @@ class Options extends Component {
         <button 
           className='button' 
           onClick={this.props.handleClickOne}
-        >
-          {this.props.optionOne}
-        </button>
+        >{this.props.optionOne}</button>
         <button 
           className='button' 
           onClick={this.props.handleClickTwo}
-        >
-          {this.props.optionTwo}
-        </button>
+        >{this.props.optionTwo}</button>
       </div>
     )
   }
@@ -229,7 +233,10 @@ class Options extends Component {
 class App extends Component {
   render () {
     return (
-      <StartMenu />
+      <div>
+        <h1>Work in Progress!</h1>
+        <StartMenu />
+      </div>
     )
   }
 }
