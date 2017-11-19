@@ -11,11 +11,19 @@ function Square(props) {
 
 class Board extends Component {
 
-  renderSquare = (i) => {
+  renderSquare = i => {
+    let squareValue
+
+    if (this.props.currentSquares[i] !== 'X' && this.props.currentSquares[i] !== 'O') {
+      squareValue = ''
+    } else {
+      squareValue = this.props.currentSquares[i]
+    } 
+
     return (
       <Square 
       className={'square #' + i}
-      value={this.props.currentSquares[i]}
+      value={squareValue}
       onClick={() => {this.props.onClick(i)}}/>
     )
   }
@@ -47,7 +55,7 @@ class Game extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentSquares: Array(9).fill(null),
+      currentSquares: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       xsTurn: true
     }
   }
@@ -55,7 +63,7 @@ class Game extends Component {
   handleClick = (i) => {
     const newSquares = this.state.currentSquares.slice()
     
-    if (newSquares[i] !== null || checkWinner(newSquares)) {
+    if (newSquares[i] === 'X' || newSquares[i] === 'O' || checkWinner(newSquares)) {
       return
     }
 
@@ -75,33 +83,30 @@ class Game extends Component {
   }
 
   componentDidUpdate() {
-    const currentPlayer = this.state.xsTurn ? 'X' : 'O'
-    console.log(minimax(this.state.currentSquares, currentPlayer, 'X', 'O'))
+    // const numberOfPlayers = this.props.numberOfPlayers
+    // const squares = this.state.currentSquares
 
-    const numberOfPlayers = this.props.numberOfPlayers
-    const squares = this.state.currentSquares
+    // if (numberOfPlayers === 1 && !this.state.xsTurn && squares.includes(null)) {
+    //   let movePossible = false
 
-    if (numberOfPlayers === 1 && !this.state.xsTurn && squares.includes(null)) {
-      let movePossible = false
+    //   while (!movePossible) {
+    //     let num = random()
 
-      while (!movePossible) {
-        let num = random()
-
-        if (squares[num] === null) {
-          this.handleClick(num)
-          movePossible = true
-        }
-      }
-    }
+    //     if (squares[num] === null) {
+    //       this.handleClick(num)
+    //       movePossible = true
+    //     }
+    //   }
+    // }
   }
 
   render () {
     const squares = this.state.currentSquares
     let status 
-
+    
     if (checkWinner(squares)) {
       status = checkWinner(squares) + ' Wins!'
-    } else if (!checkWinner(squares) && !squares.includes(null)) {
+    } else if (!checkWinner(squares) && emptySpaces(squares).length === 0) {
       status = 'Tie'
     } else {
       status = this.state.xsTurn ? 'Current Player: X' : 'Current Player: O'
@@ -276,25 +281,17 @@ function emptySpaces (board) {
       result.push(i)
     }
   }
+  
   return result
 }
 
 function minimax (newBoard, current, human, computer) {
-  // debugger
   const availableSpaces = emptySpaces(newBoard)
   const moves = []
-  let bestMove
-
-  if (checkWinner(newBoard) === human) {
-    return {score: -10}
-  } else if (checkWinner(newBoard) === computer) {
-    return {score: 10}
-  } else if (availableSpaces.length === 0) {
-    return {score: 0}
-  }
 
   for (let i = 0; i < availableSpaces.length; i++) {
-    let move = {}
+
+    const move = {}
     move.index = newBoard[availableSpaces[i]]
 
     newBoard[availableSpaces[i]] = current
@@ -307,30 +304,32 @@ function minimax (newBoard, current, human, computer) {
       move.score = result.score
     }
 
-    newBoard[availableSpaces[i]] = null
+    newBoard[availableSpaces[i]] = move.index
 
     moves.push(move)
   }
 
-  if (current === computer) {
-    let bestScore = -10000
+  let bestMove
 
-    for (let i = 0; i < moves.length; i++) {
-      if (moves[i].score > bestScore) {
-        bestScore = moves[i].score
-        bestMove = i
-      }
-    }
-  } else {
-    let bestScore = 10000
-    for (let i = 0; i < moves.length; i++) {
-      if (moves[i].score < bestScore) {
-        bestScore = moves[i].score
-        bestMove = i
-      }
-    }
-  }
-  return moves[bestMove]
+  // if (current === computer) {
+  //   let bestScore = -10000
+
+  //   for (let i = 0; i < moves.length; i++) {
+  //     if (moves[i].score > bestScore) {
+  //       bestScore = moves[i].score
+  //       bestMove = i
+  //     }
+  //   }
+  // } else {
+  //   let bestScore = 10000
+  //   for (let i = 0; i < moves.length; i++) {
+  //     if (moves[i].score < bestScore) {
+  //       bestScore = moves[i].score
+  //       bestMove = i
+  //     }
+  //   }
+  // }
+  // return moves[bestMove]
 }
 
 export default App
