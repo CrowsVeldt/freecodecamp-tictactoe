@@ -56,6 +56,7 @@ class Game extends Component {
     super(props)
     this.state = {
       currentSquares: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      humanPlayer: this.props.humanPlayer,
       xsTurn: true
     }
   }
@@ -77,27 +78,33 @@ class Game extends Component {
 
   restart = () => {
     this.setState({
-      currentSquares: Array(9).fill(null),
+      currentSquares: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       xsTurn: true
     })
   }
 
+  computerMove = () => {
+    let result
+    if (this.state.humanPlayer !== null) {
+      const humanPlayer = this.state.humanPlayer
+      const computerPlayer = humanPlayer === 'X' ? 'O' : 'X'
+      const currentPlayer = this.state.xsTurn ? 'X' : 'O'
+      if (humanPlayer === 'X' && currentPlayer === 'O') {
+        result = minimax(this.state.currentSquares, 'O', humanPlayer, computerPlayer)
+        this.handleClick(result.index)
+      } else if (humanPlayer === 'O' && currentPlayer === 'X') {
+        result = minimax(this.state.currentSquares, 'X', humanPlayer, computerPlayer)
+        this.handleClick(result.index)
+      }
+    }
+  }
+
   componentDidUpdate() {
-    // const numberOfPlayers = this.props.numberOfPlayers
-    // const squares = this.state.currentSquares
+    this.computerMove()
+  }
 
-    // if (numberOfPlayers === 1 && !this.state.xsTurn && squares.includes(null)) {
-    //   let movePossible = false
-
-    //   while (!movePossible) {
-    //     let num = random()
-
-    //     if (squares[num] === null) {
-    //       this.handleClick(num)
-    //       movePossible = true
-    //     }
-    //   }
-    // }
+  componentDidMount() {
+    this.computerMove()
   }
 
   render () {
@@ -241,7 +248,6 @@ class App extends Component {
   render () {
     return (
       <div>
-        <h1>Work in Progress!</h1>
         <StartMenu />
       </div>
     )
@@ -269,10 +275,6 @@ function checkWinner (check)  {
   return null
 }
 
-function random () {
-  return Math.floor(Math.random() * (8 - 0 + 1)) + 0
-}
-
 function emptySpaces (board) {
   const result = []
 
@@ -285,22 +287,30 @@ function emptySpaces (board) {
   return result
 }
 
-function minimax (newBoard, current, human, computer) {
+function minimax (board, current, human, computer) {
+  const newBoard = board.slice()
   const availableSpaces = emptySpaces(newBoard)
   const moves = []
 
-  for (let i = 0; i < availableSpaces.length; i++) {
+  if (checkWinner(newBoard) === human) {
+    return { score: -10 };
+  } else if (checkWinner(newBoard) === computer) {
+    return { score: 10 };
+  } else if (availableSpaces.length === 0){
+    return { score: 0 };
+  }
 
+  for (let i = 0; i < availableSpaces.length; i++) {
     const move = {}
     move.index = newBoard[availableSpaces[i]]
 
     newBoard[availableSpaces[i]] = current
 
     if (current === computer) {
-      const result = minimax(newBoard, human)
+      const result = minimax(newBoard, human, human, computer)
       move.score = result.score
     } else {
-      const result = minimax(newBoard, computer)
+      const result = minimax(newBoard, computer, human, computer)
       move.score = result.score
     }
 
@@ -311,25 +321,24 @@ function minimax (newBoard, current, human, computer) {
 
   let bestMove
 
-  // if (current === computer) {
-  //   let bestScore = -10000
-
-  //   for (let i = 0; i < moves.length; i++) {
-  //     if (moves[i].score > bestScore) {
-  //       bestScore = moves[i].score
-  //       bestMove = i
-  //     }
-  //   }
-  // } else {
-  //   let bestScore = 10000
-  //   for (let i = 0; i < moves.length; i++) {
-  //     if (moves[i].score < bestScore) {
-  //       bestScore = moves[i].score
-  //       bestMove = i
-  //     }
-  //   }
-  // }
-  // return moves[bestMove]
+  if (current === computer) {
+    let bestScore = -10000
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score > bestScore) {
+        bestScore = moves[i].score
+        bestMove = i
+      }
+    }
+  } else {
+    let bestScore = 10000
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score < bestScore) {
+        bestScore = moves[i].score
+        bestMove = i
+      }
+    }
+  }
+  return moves[bestMove]
 }
 
 export default App
