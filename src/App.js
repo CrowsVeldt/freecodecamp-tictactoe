@@ -3,7 +3,10 @@ import './App.css'
 
 function Square(props) {
     return (
-      <button className='game-square' onClick={props.onClick}>
+      <button 
+        className='game-square' 
+        onClick={props.onClick}
+      >
         {props.value}
       </button>
     )
@@ -133,7 +136,7 @@ class Game extends Component {
             onClick={this.props.returnFunction}
           >Menu</button>
           <button 
-            className='new-game' 
+            className='new-game-button' 
             onClick={this.restart}
           >Restart</button>
         </div>
@@ -216,12 +219,11 @@ class StartMenu extends Component {
         />
       }
       {this.state.gameStarted &&
-        <div>
-          <Game 
-            numberOfPlayers={this.state.numberOfPlayers} 
-            humanPlayer={this.state.humanPlayer}
-            returnFunction={this.returnToMenu}
-          /></div>
+        <Game 
+          numberOfPlayers={this.state.numberOfPlayers} 
+          humanPlayer={this.state.humanPlayer}
+          returnFunction={this.returnToMenu}
+        />
       }
     </div>
   )
@@ -256,7 +258,7 @@ class App extends Component {
   }
 }
 
-function checkWinner (check)  {
+function checkWinner (letterToCheck)  {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -270,8 +272,10 @@ function checkWinner (check)  {
 
   for (let i = 0, length = lines.length; i < length; i++) {
     const [a, b, c] = lines[i]
-    if (check[a] && check[a] === check[b] && check[a] === check[c]) {
-      return check[a]
+    if (letterToCheck[a] && 
+      letterToCheck[a] === letterToCheck[b] && 
+      letterToCheck[a] === letterToCheck[c]) {
+      return letterToCheck[a]
     }
   }
   return null
@@ -280,7 +284,7 @@ function checkWinner (check)  {
 function emptySpaces (board) {
   const result = []
 
-  for (let i = 0; i < board.length; i++) {
+  for (let i = 0, length = board.length; i < length; i++) {
     if (board[i] !== 'X' && board[i] !== 'O'){
       result.push(i)
     }
