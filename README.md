@@ -16,7 +16,7 @@ Tic Tac Toe, kinda self-explanatory init? Built for the [freeCodeCamp](www.freec
 
 ## Preperation:
 
-This was my first time using Rreact so I started by following the official React tutorial which, to my surprise, turned out to be Tic Tac Toe! I still wasn't entirely confident in my understanding of React so I worked through a few more introductory materials online before starting.
+This was my first time using React so I started by following the official React tutorial which, to my surprise, turned out to be Tic Tac Toe! I still wasn't entirely confident in my understanding of React so I worked through a few more introductory materials online before starting.
 
 
 ## The Project:
